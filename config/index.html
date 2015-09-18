@@ -4,6 +4,8 @@
 <title>Pebble Watchface Configuration</title>
 <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
 <meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
 <script src='js/slate.min.js'></script>
 <style>
 .title {
@@ -28,6 +30,28 @@
 		</div>
 	</div>
 
+	<div class="item-container">
+	  <div class="item-container-header">Weather Location</div>
+	  <div class="item-container-content">
+	    <label class="item">
+		   	<div class="item-input-wrapper item-input-wrapper-button">
+	        		<input id="cityname_input" type="text" class="item-input" placeholder="Seoul">
+	      	</div>
+      			<input type="button" class="item-button item-input-button" value="Find">
+      	</label>
+      	<label class="item">
+	      	<div class="item-input-wrapper">
+	        		<input id="cityid_input" type="number" class="item-input" placeholder="1835848">
+	      	</div>
+	    </label>
+	  </div>
+		<div class='item-container-footer'>
+			We use the OpenWeatherMap API to provide weather informations and it
+			needs your city id. You can find more informations at 
+			<a href="http://openweathermap.org/find" target="_blank">http://openweathermap.org/find</a>
+		</div>
+	</div>
+
 	<div class='item-container'>
 		<div class='item-container-header'>Color</div>
 		<div class='item-container-content'>
@@ -36,81 +60,70 @@
 				class='item-color item-color-sunny' value='#000000'>
 			</label>
 		</div>
-		<div class='item-container-footer'>Choose the app's background
-			color. Used if High Contrast Mode is not selected. Note: Only
-			available on Basalt watches that support many colors.</div>
 	</div>
 
 	<div class="item-container">
-		<div class="item-container-header">Temperature Degree</div>
+		<div class="item-container-header">Temperature Scale</div>
 		<div class="item-container-content">
 			<label class="item tab-buttons"> 
-				<a name="temperature_degree_tab" class="tab-button active" value='1'>Celcius</a>
-				<a name="temperature_degree_tab" class="tab-button" value='2'>Fahrenheit</a>
+				<a id="temperature_scale_tab1" name="tab-1" class="tab-button active">Celcius</a>
+				<a id="temperature_scale_tab2" name="tab-1" class="tab-button">Fahrenheit</a>
 			</label>
 		</div>
-		<div class='item-container-footer'>Choose the app's background
-			color. Used if High Contrast Mode is not selected. Note: Only
-			available on Basalt watches that support many colors.</div>
 	</div>
 
 	<div class="item-container">
-		<div class="item-container-header">Weather Update Period</div>
-		<div class="item-container-content">
-			<label class="item tab-buttons"> 
-				<a name="weather_update_period_tab" class="tab-button" value='1'>30 	min</a> 
-				<a name="weather_update_period_tab" class="tab-button active" value='2'>1 hour</a> 
-				<a name="weather_update_period_tab" class="tab-button" value='3'>2 hours</a>
-			</label>
-		</div>
-		<div class='item-container-footer'>Choose the app's background
-			color. Used if High Contrast Mode is not selected. Note: Only
-			available on Basalt watches that support many colors.</div>
-	</div>
-
-	<div class="item-container">
-		<div class="item-container-header">Date Format</div>
+		<div class="item-container-header">Date Display</div>
 		<div class="item-container-content">
 			<label class="item tab-buttons"> 
 			<label class="item">
 					Date Format
-					<select name="select-1" dir='rtl' class="item-select">
-						<option class="item-select-option" selected>MM.DD DAY</option>
-						<option class="item-select-option" >DD.MM DAY</option>
+					<select id="date_display_select" dir='rtl' class="item-select">
+						<option class="item-select-option" value="1" selected>MM.DD DAY</option>
+						<option class="item-select-option" value="2" >DD.MM DAY</option>
 				</select>
 			</label>
 			</label>
 		</div>
-		<div class='item-container-footer'>Choose the app's background
-			color. Used if High Contrast Mode is not selected. Note: Only
-			available on Basalt watches that support many colors.</div>
 	</div>	
 
 	<div class='item-container'>
 		<div class='button-container'>
-			<input id='submit_button' type='button' class='item-button'
-				value='SUBMIT'>
+				<input id='submit_button' type='button' class='item-button'
+					value='SUBMIT'>
+				<input id='cancel_button' type='button' class='item-button'
+					value='CANCEL'>
 		</div>
 	</div>
 </body>
 <script>
-  // https://github.com/pebble/slate
-  
   function getConfigData() {
+  	var citinameInput = document.getElementById('cityname_input');
+    var citiidInput = document.getElementById('cityid_input');
     var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
-    var temperatureDegreeTab = document.getElementById('temperature_degree_tab');
- 
-    var options = {
-      'background_color': backgroundColorPicker.value,
-      'high_contrast': highContrastCheckbox.checked,
-      'temperature_degree': temperatureDegreeTab.active
-    };
+    var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
+    var dateDisplaySelect = document.getElementById('date_display_select');
 
+	// Use className attribute to get temperature scale tab value
+	var temperatureScaleTab = 1;	 // Celcius
+	if(temperatureScaleTab1.className == "tab-button") {
+		temperatureScaleTab = 2;	// Fahrenheit
+	}
+	
+    var options = {
+      'locName': citinameInput.value,
+      'locId': citiidInput.value,
+      'bgColor01': backgroundColorPicker.value,
+      'tType': temperatureScaleTab,
+      'dFormat': dateDisplaySelect.value
+    };
+    
     // Save for next launch
-    localStorage['background_color'] = options['background_color'];
-    localStorage['high_contrast'] = options['high_contrast'];
-    localStorage['temperature_degree'] = options['temperature_degree'];
+    localStorage['locName'] = options['locName'];
+    localStorage['locId'] = options['locId'];
+    localStorage['bgColor01'] = options['bgColor01'];
+    localStorage['tType'] = options['tType'];
+    localStorage['dFormat'] = options['dFormat'];
 
     console.log('Got options: ' + JSON.stringify(options));
     return options;
@@ -136,17 +149,37 @@
     var return_to = getQueryParam('return_to', 'pebblejs://close#');
     document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
   });
+  
+  var cancelButton = document.getElementById('cancel_button');
+  cancelButton.addEventListener('click', function() {
+	// Close this web page
+    document.location = getQueryParam('return_to', 'pebblejs://close#');
+    console.log('Cancel ' + document.location);
+  });
 
   (function() {
+  	console.log('Load any previously saved configuration');
+  	
+    var citinameInput = document.getElementById('cityname_input');
+    var citiidInput = document.getElementById('cityid_input');
     var backgroundColorPicker = document.getElementById('background_color_picker');
-    var highContrastCheckbox = document.getElementById('high_contrast_checkbox');
-    var temperatureDegreeTab = document.getElementById('temperature_degree_tab');
-
+    var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
+    var temperatureScaleTab2 = document.getElementById('temperature_scale_tab2');
+    var dateDisplaySelect = document.getElementById('date_display_select');
+    
     // Load any previously saved configuration, if available
-    if(localStorage['high_contrast']) {
-      highContrastCheckbox.checked = JSON.parse(localStorage['high_contrast']);
-      backgroundColorPicker.value = localStorage['background_color'];
-      temperatureDegreeTab.active = localStorage['temperature_degree'];
+    if(localStorage['locId']) {
+		citiidInput.value = JSON.parse(localStorage['locId']);
+		citinameInput.value = localStorage['locName'];
+		backgroundColorPicker.value = localStorage['bgColor01'];
+		dateDisplaySelect.value = localStorage['dFormat'];
+
+		// Set the temperature scale tab's className attributes, defualt value is Celcius
+		var scaleTab = localStorage['tType'];
+		if(scaleTab == 2) {	// Fahrenheit
+			temperatureScaleTab1.className = "tab-button";
+			temperatureScaleTab2.className = "tab-button active";
+		}
     }
   })();
   </script>
