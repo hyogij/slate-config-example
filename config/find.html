@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pebble Watchface Configuration</title>
+<link rel='stylesheet' type='text/css' href='css/slate.min.css'>
+<meta charset='utf-8'>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+<script src='js/slate.min.js'></script>
+<style>
+.title {
+	padding: 15px 10px;
+	text-transform: uppercase;
+	font-family: 'PT Sans', sans-serif;
+	font-size: 1.2em;
+	font-weight: 500;
+	color: #888888;
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+	<h1 class='title'>Pebble Watchface Configuration</h1>
+
+	<div class='item-container'>
+		<div class='item-container-content'>
+			<div class='item'>Use this configuration page to choose the
+				settings you would like applied to this watchface.</div>
+		</div>
+	</div>
+
+	<div class="item-container">
+	  <div class="item-container-header">Weather Location</div>
+	  <div class="item-container-content">
+	    <label class="item">
+		   	<div class="item-input-wrapper item-input-wrapper-button">
+	        		<input id="cityname_input" type="text" class="item-input" placeholder="Seoul">
+	      	</div>
+      			<input id='find_button' type="button" class="item-button item-input-button" value="Find">
+      	</label>
+	  </div>
+		
+		
+		<div class="item-container">
+		  <div class="item-container-header">Results</div>
+		  <div class="item-container-content" id="result_citinames">
+		
+		  </div>
+		</div>
+		<div class='item-container-footer'>
+			We use the OpenWeatherMap API to provide weather informations and it
+			needs your city id. You can find more informations at 
+			<a href="http://openweathermap.org/find" target="_blank">http://openweathermap.org/find</a>
+		</div>
+		
+		<div class='item-container'>
+		<div class='button-container'>
+				<input id='close_button' type='button' class='item-button'
+					value='CLOSE'>
+		</div>
+	</div>
+	</div>
+</body>
+<script>
+	var findButton = document.getElementById('find_button');
+	findButton.addEventListener('click', function() {
+ 		var citiname = document.getElementById('cityname_input').value;
+   		console.log('Find ' + citiname);
+		loadXMLDoc(citiname);
+  	});
+   
+  // Initialize function which is called page onloading
+  (function() {
+  	console.log('Load any previously saved configuration');
+  	
+  	var citiname = getQueryVar('q');
+	console.log('citiname ' + citiname);
+	  			
+    var citinameInput = document.getElementById('cityname_input');
+    citinameInput.value = citiname;
+    
+    loadXMLDoc(citiname);
+  })();
+  
+	function loadXMLDoc(query) {
+	  	var xmlhttp;
+		if (window.XMLHttpRequest) {
+			// code for new browsers
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				// Parse the response and display
+				displayResult(xmlhttp.responseXML);
+			}
+		}
+		xmlhttp.open("GET", "http://api.openweathermap.org/data/2.5/find?q=" 
+		+ query
+		+ "&type=like&mode=xml", true);
+		xmlhttp.send();
+	}
+	
+	function displayResult(response) {
+		txt = "";
+		citys = response.getElementsByTagName("city");
+		countrys = response.getElementsByTagName("country");
+		
+		var resultCitinames = document.getElementById("result_citinames");
+
+		// Clear current child nodes		
+		while (resultCitinames.hasChildNodes()) {
+		    resultCitinames.removeChild(resultCitinames.lastChild);
+		}
+
+		for (i = 0; i < citys.length; i++) {
+			var text = " " + citys[i].getAttribute('name')  
+				+ "(" 
+			    	 + countrys[i].childNodes[0].nodeValue
+			    	 + ") : " 
+			    	 + citys[i].getAttribute('id');
+			var radioButton = makeRadioButton(citys[i].getAttribute('id'), text);
+	  		resultCitinames.appendChild(radioButton);
+		}
+	}
+
+	function makeRadioButton(value, text) {
+	   var label = document.createElement("label");
+	   var radio = document.createElement("input");
+	   label.className = "item"
+	   radio.type = "radio";
+	   radio.class = "item-radio";
+	   radio.name = "radio-1";
+	   radio.value = value;
+	
+	   label.appendChild(radio);
+	   label.appendChild(document.createTextNode(text));
+	   return label;
+	 }
+	
+	function getQueryVar(varName){
+	    // Grab and unescape the query string - appending an '&' keeps the RegExp simple
+	    // for the sake of this example.
+	    var queryStr = unescape(window.location.search) + '&';
+	
+	    // Dynamic replacement RegExp
+	    var regex = new RegExp('.*?[&\\?]' + varName + '=(.*?)&.*');
+	
+	    // Apply RegExp to the query string
+	    val = queryStr.replace(regex, "$1");
+	
+	    // If the string is the same, we didn't find a match - return false
+	    return val == queryStr ? false : val;
+	}
+  </script>
+</html>
