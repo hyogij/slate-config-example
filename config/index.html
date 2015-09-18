@@ -105,9 +105,9 @@
     var dateDisplaySelect = document.getElementById('date_display_select');
 
 	// Use className attribute to get temperature scale tab value
-	var temperatureScaleTab = 1;	 // Celcius
+	var temperatureScaleTab = "1";	 // Celcius
 	if(temperatureScaleTab1.className == "tab-button") {
-		temperatureScaleTab = 2;	// Fahrenheit
+		temperatureScaleTab = "2";	// Fahrenheit
 	}
 	
     var options = {
@@ -176,7 +176,7 @@
 
 		// Set the temperature scale tab's className attributes, defualt value is Celcius
 		var scaleTab = localStorage['tType'];
-		if(scaleTab == 2) {	// Fahrenheit
+		if(scaleTab == "2") {	// Fahrenheit
 			temperatureScaleTab1.className = "tab-button";
 			temperatureScaleTab2.className = "tab-button active";
 		}
