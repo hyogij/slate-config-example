@@ -26,23 +26,18 @@
 	<div class='item-container'>
 		<div class='item-container-content'>
 			<div class='item'>Use this configuration page to choose the
-				settings you would like applied to this app.</div>
+				settings you would like applied to this watchface.</div>
 		</div>
 	</div>
 
 	<div class="item-container">
 	  <div class="item-container-header">Weather Location</div>
 	  <div class="item-container-content">
-	    <label class="item">
-		   	<div class="item-input-wrapper item-input-wrapper-button">
-	        		<input id="cityname_input" type="text" class="item-input" placeholder="Seoul">
-	      	</div>
-      			<input type="button" class="item-button item-input-button" value="Find">
-      	</label>
       	<label class="item">
-	      	<div class="item-input-wrapper">
+	      	<div class="item-input-wrapper item-input-wrapper-button">
 	        		<input id="cityid_input" type="number" class="item-input" placeholder="1835848">
 	      	</div>
+	      	<input type="button" class="item-button item-input-button" value="Find">
 	    </label>
 	  </div>
 		<div class='item-container-footer'>
@@ -98,7 +93,6 @@
 </body>
 <script>
   function getConfigData() {
-  	var citinameInput = document.getElementById('cityname_input');
     var citiidInput = document.getElementById('cityid_input');
     var backgroundColorPicker = document.getElementById('background_color_picker');
     var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
@@ -111,7 +105,6 @@
 	}
 	
     var options = {
-      'locName': citinameInput.value,
       'locId': citiidInput.value,
       'bgColor01': backgroundColorPicker.value,
       'tType': temperatureScaleTab,
@@ -119,7 +112,6 @@
     };
     
     // Save for next launch
-    localStorage['locName'] = options['locName'];
     localStorage['locId'] = options['locId'];
     localStorage['bgColor01'] = options['bgColor01'];
     localStorage['tType'] = options['tType'];
@@ -160,7 +152,6 @@
   (function() {
   	console.log('Load any previously saved configuration');
   	
-    var citinameInput = document.getElementById('cityname_input');
     var citiidInput = document.getElementById('cityid_input');
     var backgroundColorPicker = document.getElementById('background_color_picker');
     var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
@@ -170,7 +161,6 @@
     // Load any previously saved configuration, if available
     if(localStorage['locId']) {
 		citiidInput.value = JSON.parse(localStorage['locId']);
-		citinameInput.value = localStorage['locName'];
 		backgroundColorPicker.value = localStorage['bgColor01'];
 		dateDisplaySelect.value = localStorage['dFormat'];
 
