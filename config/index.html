@@ -115,7 +115,7 @@
 	
     var options = {};
     
-	// Insert only modified values into json and 
+	// Insert only modified values into json 
     if(localStorage['locId'] != citiidInput.value) {
     		options['locId'] = citiidInput.value;
     }
@@ -172,7 +172,7 @@
   var cancelButton = document.getElementById('cancel_button');
   cancelButton.addEventListener('click', function() {
 	// Close this web page
-    document.location = getQueryParam('return_to', 'pebblejs://close#');
+    document.location = getQueryParam('return_to', 'pebblejs://close');
     console.log('Cancel ' + document.location);
   });
   
