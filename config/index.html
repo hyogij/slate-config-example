@@ -196,10 +196,10 @@
 		    resultCitinames.removeChild(resultCitinames.lastChild);
 		}
 		
-		// If there is no result, 
+		// If there is no result, set the label with "no resutls!"
 		if (response == null || response == undefined) {
-			var textLable = makeTextLable("No, Results. Try it again!");
-			resultCitinames.appendChild(textLable);
+			var textLabel = makeTextLabel("No, Results. Try it again!");
+			resultCitinames.appendChild(textLabel);
 			
 			var citiidInput = document.getElementById('cityid_input');
 	     	citiidInput.value = "";
@@ -221,7 +221,7 @@
 		}
 	}
 	
-	function makeTextLable(text) {
+	function makeTextLabel(text) {
 	   var label = document.createElement("label");
 	   label.className = "item"
 	   label.appendChild(document.createTextNode(text));
