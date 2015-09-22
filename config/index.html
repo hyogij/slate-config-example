@@ -44,6 +44,9 @@
 	        		<input id="cityid_input" type="number" class="item-input" placeholder="1835848">
 	      	</div>
 	    </label>
+		    <div class="item-container-content" id="result_citinames">
+		
+			</div>
 	  </div>
 		<div class='item-container-footer'>
 			We use the OpenWeatherMap API to provide weather informations and it
@@ -144,8 +147,8 @@
  var findButton = document.getElementById('find_button');
   findButton.addEventListener('click', function() {
   	var citiname = document.getElementById('cityname_input').value;
-    console.log('Find ' + citiname);
-	window.open("find.html?q=" + citiname);
+   	console.log('Find ' + citiname);
+	loadXMLDoc(citiname);
   });
   
   var submitButton = document.getElementById('submit_button');
@@ -163,6 +166,85 @@
     document.location = getQueryParam('return_to', 'pebblejs://close#');
     console.log('Cancel ' + document.location);
   });
+  
+  function loadXMLDoc(query) {
+	  	var xmlhttp;
+		if (window.XMLHttpRequest) {
+			// code for new browsers
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				// Parse the response and display
+				displayResult(xmlhttp.responseXML);
+			}
+		}
+		xmlhttp.open("GET", "http://api.openweathermap.org/data/2.5/find?q=" 
+		+ query
+		+ "&type=like&mode=xml", true);
+		xmlhttp.send();
+	}
+	
+	function displayResult(response) {
+		var resultCitinames = document.getElementById("result_citinames");
+
+		// Clear current child nodes		
+		while (resultCitinames.hasChildNodes()) {
+		    resultCitinames.removeChild(resultCitinames.lastChild);
+		}
+		
+		// If there is no result, 
+		if (response == null || response == undefined) {
+			var textLable = makeTextLable("No, Results. Try it again!");
+			resultCitinames.appendChild(textLable);
+			
+			var citiidInput = document.getElementById('cityid_input');
+	     	citiidInput.value = "";
+        		return;
+    		}
+
+		txt = "";
+		citys = response.getElementsByTagName("city");
+		countrys = response.getElementsByTagName("country");
+		
+		for (i = 0; i < citys.length; i++) {
+			var text = " " + citys[i].getAttribute('name')  
+				+ "(" 
+			    	 + countrys[i].childNodes[0].nodeValue
+			    	 + ") : " 
+			    	 + citys[i].getAttribute('id');
+			var radioButton = makeRadioButton(citys[i].getAttribute('id'), text);
+	  		resultCitinames.appendChild(radioButton);
+		}
+	}
+	
+	function makeTextLable(text) {
+	   var label = document.createElement("label");
+	   label.className = "item"
+	   label.appendChild(document.createTextNode(text));
+	   return label;
+	 }
+
+	function makeRadioButton(value, text) {
+	   var label = document.createElement("label");
+	   var radio = document.createElement("input");
+	   label.className = "item"
+	   radio.type = "radio";
+	   radio.class = "item-radio";
+	   radio.name = "radio-1";
+	   radio.value = value;
+	   radio.onclick = function(){ 
+	   	var citiidInput = document.getElementById('cityid_input');
+	    citiidInput.value = radio.value;
+	   };
+	
+	   label.appendChild(radio);
+	   label.appendChild(document.createTextNode(text));
+	   return label;
+	 }
 
   (function() {
   	console.log('Load any previously saved configuration');
