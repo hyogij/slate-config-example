@@ -113,21 +113,29 @@
 		temperatureScaleTab = "2";	// Fahrenheit
 	}
 	
-    var options = {
-      'locName': citinameInput.value,
-      'locId': citiidInput.value,
-      'bgColor01': backgroundColorPicker.value,
-      'tType': temperatureScaleTab,
-      'dFormat': dateDisplaySelect.value
-    };
+    var options = {};
+    
+	// Insert only modified values into json and 
+    if(localStorage['locId'] != citiidInput.value) {
+    		options['locId'] = citiidInput.value;
+    }
+    if(localStorage['bgColor01'] != backgroundColorPicker.value) {
+    		options['bgColor01'] = backgroundColorPicker.value;
+    }
+    if(localStorage['tType'] != temperatureScaleTab) {
+    		options['tType'] = temperatureScaleTab;
+    }
+    if(localStorage['dFormat'] != dateDisplaySelect.value) {
+    		options['dFormat'] = dateDisplaySelect.value;
+    }
     
     // Save for next launch
-    localStorage['locName'] = options['locName'];
-    localStorage['locId'] = options['locId'];
-    localStorage['bgColor01'] = options['bgColor01'];
-    localStorage['tType'] = options['tType'];
-    localStorage['dFormat'] = options['dFormat'];
-
+ 	localStorage['locName'] = citinameInput.value;
+    	localStorage['locId'] = citiidInput.value;
+    	localStorage['bgColor01'] = backgroundColorPicker.value;
+	localStorage['tType'] = temperatureScaleTab;
+	localStorage['dFormat'] = dateDisplaySelect.value;
+    		    
     console.log('Got options: ' + JSON.stringify(options));
     return options;
   }
@@ -160,6 +168,7 @@
     document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
   });
   
+  // TODO(hyogij): Don't call event handler when cancel button is clicked 
   var cancelButton = document.getElementById('cancel_button');
   cancelButton.addEventListener('click', function() {
 	// Close this web page
