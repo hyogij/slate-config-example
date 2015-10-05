@@ -129,13 +129,6 @@
     		options['dFormat'] = dateDisplaySelect.value;
     }
     
-    // Save for next launch
- 	localStorage['locName'] = citinameInput.value;
-    	localStorage['locId'] = citiidInput.value;
-    	localStorage['bgColor01'] = backgroundColorPicker.value;
-	localStorage['tType'] = temperatureScaleTab;
-	localStorage['dFormat'] = dateDisplaySelect.value;
-    		    
     console.log('Got options: ' + JSON.stringify(options));
     return options;
   }
@@ -254,31 +247,47 @@
 	   label.appendChild(document.createTextNode(text));
 	   return label;
 	 }
+	 
+	 function getUrlParameter(name) {
+		  url = location.href
+		  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		  var regexS = "[\\?&]"+name+"=([^&#]*)";
+		  var regex = new RegExp( regexS );
+		  var results = regex.exec( url );
+		  return results == null ? null : results[1];
+	}
 
   (function() {
   	console.log('Load any previously saved configuration');
-  	
-    var citinameInput = document.getElementById('cityname_input');
-    var citiidInput = document.getElementById('cityid_input');
-    var backgroundColorPicker = document.getElementById('background_color_picker');
-    var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
-    var temperatureScaleTab2 = document.getElementById('temperature_scale_tab2');
-    var dateDisplaySelect = document.getElementById('date_display_select');
-    
-    // Load any previously saved configuration, if available
-    if(localStorage['locId']) {
-		citiidInput.value = JSON.parse(localStorage['locId']);
-		citinameInput.value = localStorage['locName'];
-		backgroundColorPicker.value = localStorage['bgColor01'];
-		dateDisplaySelect.value = localStorage['dFormat'];
 
+    // Load any previously saved configuration in pebble using url parameters    
+    if(getUrlParameter('locId') != null) {
+        var citinameInput = document.getElementById('cityname_input');
+		citiidInput.value = getUrlParameter('locId');
+	}
+	if(getUrlParameter('locName') != null) {
+	    var citiidInput = document.getElementById('cityid_input');
+		citinameInput.value = getUrlParameter('locName');
+	}
+	if(getUrlParameter('bgColor01') != null) {
+	    var backgroundColorPicker = document.getElementById('background_color_picker');
+		backgroundColorPicker.value = getUrlParameter('bgColor01');
+	}
+	if(getUrlParameter('dFormat') != null) {
+		dateDisplaySelect.value = getUrlParameter('dFormat');
+	}
+	if(getUrlParameter('tType') != null) {
 		// Set the temperature scale tab's className attributes, defualt value is Celcius
-		var scaleTab = localStorage['tType'];
+		var temperatureScaleTab1 = document.getElementById('temperature_scale_tab1');
+    		var temperatureScaleTab2 = document.getElementById('temperature_scale_tab2');
+		var dateDisplaySelect = document.getElementById('date_display_select');
+				
+		var scaleTab = getUrlParameter('tType');
 		if(scaleTab == "2") {	// Fahrenheit
 			temperatureScaleTab1.className = "tab-button";
 			temperatureScaleTab2.className = "tab-button active";
 		}
-    }
+	}
   })();
   </script>
 </html>
