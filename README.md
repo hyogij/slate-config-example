@@ -31,3 +31,7 @@ The result of hitting 'Submit' in the config page when the app is installed
 results in the following app look and feel:
 
 ![screensho1](screenshots/screenshot1.png)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hyogij/slate-config-example/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
